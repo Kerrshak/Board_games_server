@@ -29,14 +29,15 @@ describe('.GET /api/categories', () => {
         .get('/api/categories')
         .expect(200)
         .then(({body}) => {
-            expect(Array.isArray(body.categories)).toBe(true)
+            console.log(body)
+            expect(Array.isArray(body.categories.rows)).toBe(true)
         })
     })
     test('each object should have the properties of "slug" and "description"', () => {
         return request(app)
         .get('/api/categories')
         .then(({body}) => {
-            body.categories.forEach(category => {
+            body.categories.rows.forEach(category => {
                 expect(category).toEqual(expect.objectContaining({
                     slug: expect.any(String),
                     description: expect.any(String)
@@ -46,7 +47,7 @@ describe('.GET /api/categories', () => {
     })
 })
 
-describe.only('.GET /api/reviews/:review_id', () => {
+describe('.GET /api/reviews/:review_id', () => {
     test('should respond with status 200 and a review object with properties review_id, title, review_body, designer, review_img_url, votes, category, owner, created_at', () => {
         return request(app)
         .get('/api/reviews/3')
