@@ -1,8 +1,6 @@
-//controllers  CHANGE FILE NAME TO CATEGORIES
+//controllers
 
-const {
-    fetchCategories
-} = require('../_models')
+const {fetchCategories} = require('../_models/categories')
 
 exports.getCategories = (req, res) => {
     return fetchCategories()
