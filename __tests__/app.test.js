@@ -157,26 +157,26 @@ describe('PATCH /api/reviews/:review_id', () => {
     })
 })
 
-// describe('GET /api/users', () => {
-//     test('should return an array of objects and status 200', () => {
-//         return request(app)
-//         .get('/api/users')
-//         .expect(200)
-//         .then(({body}) => {
-//             expect(Array.isArray(body.users)).toBe(true)
-//         })
-//     })
-//     test('each object should have the properties of "slug" and "description"', () => {
-//         return request(app)
-//         .get('/api/users')
-//         .then(({body}) => {
-//             body.categories.forEach(category => {
-//                 expect(category).toEqual(expect.objectContaining({
-//                     username: expect.any(String),
-//                     name: expect.any(String),
-//                     avatar_url: expect.any(String)
-//                 }))
-//             })
-//         })
-//     })
-// })
+describe('GET /api/users', () => {
+    test('should return an array of objects and status 200', () => {
+        return request(app)
+        .get('/api/users')
+        .expect(200)
+        .then(({body}) => {
+            expect(Array.isArray(body.users)).toBe(true)
+        })
+    })
+    test('each object should have the properties of "username", "name" and "avatar_url"', () => {
+        return request(app)
+        .get('/api/users')
+        .then(({body}) => {
+            body.users.forEach(category => {
+                expect(category).toEqual(expect.objectContaining({
+                    username: expect.any(String),
+                    name: expect.any(String),
+                    avatar_url: expect.any(String)
+                }))
+            })
+        })
+    })
+})

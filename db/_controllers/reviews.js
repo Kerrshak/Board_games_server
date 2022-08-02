@@ -14,7 +14,6 @@ exports.patchReview = (req, res, next) => {
     const id = req.params.review_id
     const voteInc = req.body.inc_votes
 
-    console.log('Hello', voteInc)
     if (typeof voteInc !== 'number') {
         next({status: 400, msg: 'Value to increase votes by was in an incorrect format, no changes have been made'})
     } else 
