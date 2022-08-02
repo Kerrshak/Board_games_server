@@ -7,14 +7,13 @@ exports.getReview = ((req, res, next) => {
 
     return fetchReview(id)
     .then((review) => {
-        reviewStored = review
-        return fetchComments(id)
+        res.status(200).send({review: review.rows[0]})
     })
-    .then((comments) => {
-        reviewStored.rows[0].comment_count = comments.rowCount
-        console.log('Review', reviewStored.rows[0])
-        res.status(200).send({review: reviewStored.rows[0]})
-    })
+    // .then((comments) => {
+    //     reviewStored.rows[0].comment_count = comments.rowCount
+    //     console.log('Review', reviewStored.rows[0])
+    //     res.status(200).send({review: reviewStored.rows[0]})
+    // })
     .catch(next)
 })
 

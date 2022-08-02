@@ -18,7 +18,7 @@ app.patch('/api/reviews/:review_id', (req, res, next) => {
 })
 
 app.get('/api/users', (req, res) => {
-    getUsers(req, res)
+    getUsers(res)
 })
 
 app.all('/*', (req, res) => {

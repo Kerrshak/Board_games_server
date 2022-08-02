@@ -64,7 +64,7 @@ describe('.GET /api/reviews/:review_id', () => {
                 category: 'hidden-roles',
                 created_at: "2021-01-18T10:01:42.151Z",
                 votes: 5,
-                comment_count: 5
+                comment_count: "5"
             })
         })
     })
@@ -171,6 +171,7 @@ describe('GET /api/users', () => {
         return request(app)
         .get('/api/users')
         .then(({body}) => {
+            expect(body.users.length).toBe(6)
             body.users.forEach(category => {
                 expect(category).toEqual(expect.objectContaining({
                     username: expect.any(String),
