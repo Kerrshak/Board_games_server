@@ -1,11 +1,19 @@
 const {fetchReview, updateReview} = require('../_models/reviews')
+const {fetchComments} = require('../_models/comments')
 
 exports.getReview = ((req, res, next) => {
     const id = req.params.review_id
+    let reviewStored
 
     return fetchReview(id)
     .then((review) => {
-        res.status(200).send({review: review.rows[0]})
+        reviewStored = review
+        return fetchComments(id)
+    })
+    .then((comments) => {
+        reviewStored.rows[0].comment_count = comments.rowCount
+        console.log('Review', reviewStored.rows[0])
+        res.status(200).send({review: reviewStored.rows[0]})
     })
     .catch(next)
 })
