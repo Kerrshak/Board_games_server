@@ -47,7 +47,7 @@ describe('.GET /api/categories', () => {
 })
 
 describe('.GET /api/reviews/:review_id', () => {
-    test('should respond with status 200 and a review object with properties review_id, title, review_body, designer, review_img_url, votes, category, owner, created_at', () => {
+    test('should respond with status 200 and a review object with properties review_id, title, review_body, designer, review_img_url, votes, category, owner, created_at, and comment_count the last of which cross-references the comments table', () => {
         return request(app)
         .get('/api/reviews/3')
         .expect(200)
@@ -63,7 +63,8 @@ describe('.GET /api/reviews/:review_id', () => {
                   'Try to trick your friends. If you find yourself being dealt the Chamelean card then the aim of the game is simple; blend in... Meanwhile the other players aim to be as vague as they can to not give the game away ',
                 category: 'hidden-roles',
                 created_at: "2021-01-18T10:01:42.151Z",
-                votes: 5
+                votes: 5,
+                comment_count: "5"
             })
         })
     })
@@ -157,26 +158,27 @@ describe('PATCH /api/reviews/:review_id', () => {
     })
 })
 
-// describe('GET /api/users', () => {
-//     test('should return an array of objects and status 200', () => {
-//         return request(app)
-//         .get('/api/users')
-//         .expect(200)
-//         .then(({body}) => {
-//             expect(Array.isArray(body.users)).toBe(true)
-//         })
-//     })
-//     test('each object should have the properties of "slug" and "description"', () => {
-//         return request(app)
-//         .get('/api/users')
-//         .then(({body}) => {
-//             body.categories.forEach(category => {
-//                 expect(category).toEqual(expect.objectContaining({
-//                     username: expect.any(String),
-//                     name: expect.any(String),
-//                     avatar_url: expect.any(String)
-//                 }))
-//             })
-//         })
-//     })
-// })
+describe('GET /api/users', () => {
+    test('should return an array of objects and status 200', () => {
+        return request(app)
+        .get('/api/users')
+        .expect(200)
+        .then(({body}) => {
+            expect(Array.isArray(body.users)).toBe(true)
+        })
+    })
+    test('each object should have the properties of "username", "name" and "avatar_url"', () => {
+        return request(app)
+        .get('/api/users')
+        .then(({body}) => {
+            expect(body.users.length).toBe(6)
+            body.users.forEach(category => {
+                expect(category).toEqual(expect.objectContaining({
+                    username: expect.any(String),
+                    name: expect.any(String),
+                    avatar_url: expect.any(String)
+                }))
+            })
+        })
+    })
+})

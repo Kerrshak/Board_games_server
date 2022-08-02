@@ -1,6 +1,7 @@
 const express = require('express')
 const {getCategories} = require('./db/_controllers/categories')
 const {getReview, patchReview} = require('./db/_controllers/reviews')
+const {getUsers} = require('./db/_controllers/users')
 const app = express()
 
 app.use(express.json())
@@ -16,7 +17,9 @@ app.patch('/api/reviews/:review_id', (req, res, next) => {
     patchReview(req, res, next)
 })
 
-app.get
+app.get('/api/users', (req, res) => {
+    getUsers(res)
+})
 
 app.all('/*', (req, res) => {
     res.status(404).send({ msg: "We couldn't find what you were looking for, please try again"})
