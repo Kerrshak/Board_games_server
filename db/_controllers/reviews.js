@@ -1,11 +1,16 @@
-const {fetchReview, updateReview} = require('../_models/reviews')
-const {fetchComments} = require('../_models/comments')
+const {fetchReviews, fetchReviewID, updateReview} = require('../_models/reviews')
 
-exports.getReview = ((req, res, next) => {
+exports.getReviews = ((res) => {
+    return fetchReviews()
+    .then((reviews) => {
+        res.status(200).send({reviews: reviews.rows})
+    })
+})
+
+exports.getReviewID = ((req, res, next) => {
     const id = req.params.review_id
-    let reviewStored
 
-    return fetchReview(id)
+    return fetchReviewID(id)
     .then((review) => {
         res.status(200).send({review: review.rows[0]})
     })

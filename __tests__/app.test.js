@@ -46,6 +46,51 @@ describe('.GET /api/categories', () => {
     })
 })
 
+describe('.GET /api/reviews', () => {
+    test('should return an array of objects and status 200', () => {
+        return request(app)
+        .get('/api/reviews')
+        .expect(200)
+        .then(({body}) => {
+            expect(Array.isArray(body.reviews)).toBe(true)
+        })
+    })
+    test('each object should have the properties of review_id, title, review_body, designer, review_img_url, votes, category, owner, created_at, and comment_count the last of which cross-references the comments table', () => {
+        return request(app)
+        .get('/api/reviews')
+        .then(({body}) => {
+            body.reviews.forEach(category => {
+                expect(category).toEqual(expect.objectContaining({
+                    review_id : expect.any(Number),
+                    title: expect.any(String),
+                    designer: expect.any(String),
+                    owner: expect.any(String),
+                    review_img_url: expect.any(String),
+                    review_body: expect.any(String),
+                    category: expect.any(String),
+                    created_at: expect.any(String),
+                    votes: expect.any(Number),
+                    comment_count: expect.any(String)
+                }))
+            })
+        })
+    })
+    test('array should be sorted by date in descending order', () => {
+        return request(app)
+        .get('/api/reviews')
+        .then(({body}) => {
+            const regex = /[^0-9]/g
+
+            for(let i = 1; i < body.reviews.length; i++) {
+                const date1 = parseInt(body.reviews[i - 1].created_at.replace(/[^0-9]/g, ''))
+                const date2 = parseInt(body.reviews[i].created_at.replace(/[^0-9]/g, ''))
+                
+                expect(date1).toBeGreaterThanOrEqual(date2)
+            }
+        })
+    })
+})
+
 describe('.GET /api/reviews/:review_id', () => {
     test('should respond with status 200 and a review object with properties review_id, title, review_body, designer, review_img_url, votes, category, owner, created_at, and comment_count the last of which cross-references the comments table', () => {
         return request(app)
