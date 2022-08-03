@@ -1,5 +1,6 @@
 const express = require('express')
 const {getCategories} = require('./db/_controllers/categories')
+const {getComments} = require('./db/_controllers/comments')
 const {getReviews, getReviewID, patchReview} = require('./db/_controllers/reviews')
 const {getUsers} = require('./db/_controllers/users')
 const app = express()
@@ -21,6 +22,10 @@ app.patch('/api/reviews/:review_id', (req, res, next) => {
     patchReview(req, res, next)
 })
 
+app.get('/api/reviews/:review_id/comments', (req, res, next) => {
+    getComments(req, res, next)
+})
+
 app.get('/api/users', (req, res) => {
     getUsers(res)
 })
@@ -32,7 +37,7 @@ app.all('/*', (req, res) => {
 app.use((err, req, res, next) => {
     console.log('hello from errors, ', err)
     if(err.code === '22P02') {
-        res.status(400).send({msg: 'The review ID should take the form of an integer, please try again'})
+        res.status(400).send({msg: 'Bad request'})
     } else next(err, req, res,next)
 })
 

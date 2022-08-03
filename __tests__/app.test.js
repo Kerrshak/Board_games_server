@@ -126,7 +126,67 @@ describe('.GET /api/reviews/:review_id', () => {
         .get('/api/reviews/halo3')
         .expect(400)
         .then(({body}) => {
-            expect(body).toEqual({msg: 'The review ID should take the form of an integer, please try again'})
+            expect(body).toEqual({msg: 'Bad request'})
+        })
+    })
+})
+
+describe('.GET /api/reviews/:review_id/comments', () => {
+    test('should respond with status 200 and an array of comments objects with properties comment_id, body, votes, author, review_id, created_at', () => {
+        return request(app)
+        .get('/api/reviews/1/comments')
+        .expect(200)
+        .then(({body}) => {
+            expect(body).toEqual({comments: [
+                {
+                    comment_id: 59,
+                    body: 'Quis duis mollit ad enim deserunt.',
+                    votes: 3,
+                    author: 'jessjelly',
+                    review_id: 1,
+                    created_at: "2021-03-27T19:48:58.110Z"
+                },
+                {
+                    comment_id: 60,
+                    body: 'Laboris nostrud ea ex occaecat aute quis consectetur anim.',
+                    votes: 17,
+                    author: 'cooljmessy',
+                    review_id: 1,
+                    created_at: "2021-03-27T14:15:38.110Z"
+                },
+                {
+                    comment_id: 61,
+                    body: 'Consequat nisi dolor nulla esse sunt eu ipsum laborum deserunt duis. Ffugiat sint et proident ex do consequat est. Nisi minim laboris mollit cupidatat?',
+                    votes: 1,
+                    author: 'weegembump',
+                    review_id: 1,
+                    created_at: "2021-03-27T14:15:36.110Z"
+                }
+            ]})
+        })
+    })
+    test('should respond with status 204 and a message if there are no comments on the review', () => {
+        return request(app)
+        .get('/api/reviews/11/comments')
+        .expect(200)
+        .then(({body}) => {
+            expect(body).toEqual({msg: 'No comments exist on this review'})
+        })
+    })
+    test('should respond with status 404 and an error message if the review does not exist', () => {
+        return request(app)
+        .get('/api/reviews/9001/comments')
+        .expect(404)
+        .then(({body}) => {
+            expect(body).toEqual({msg: 'Not found'})
+        })
+    })
+    test('should respond with status 400 and an error message if the the review_id has been entered in an unexpected format', () => {
+        return request(app)
+        .get('/api/reviews/halo3/comments')
+        .expect(400)
+        .then(({body}) => {
+            expect(body).toEqual({msg: 'Bad request'})
         })
     })
 })
@@ -198,7 +258,7 @@ describe('PATCH /api/reviews/:review_id', () => {
         .send({inc_votes: 5})
         .expect(400)
         .then(({body}) => {
-            expect(body).toEqual({msg: 'The review ID should take the form of an integer, please try again'})
+            expect(body).toEqual({msg: 'Bad request'})
         })
     })
 })
