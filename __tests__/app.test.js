@@ -75,6 +75,20 @@ describe('.GET /api/reviews', () => {
             })
         })
     })
+    test('array should be sorted by date in descending order', () => {
+        return request(app)
+        .get('/api/reviews')
+        .then(({body}) => {
+            const regex = /[^0-9]/g
+
+            for(let i = 1; i < body.reviews.length; i++) {
+                const date1 = parseInt(body.reviews[i - 1].created_at.replace(/[^0-9]/g, ''))
+                const date2 = parseInt(body.reviews[i].created_at.replace(/[^0-9]/g, ''))
+                
+                expect(date1).toBeGreaterThanOrEqual(date2)
+            }
+        })
+    })
 })
 
 describe('.GET /api/reviews/:review_id', () => {
