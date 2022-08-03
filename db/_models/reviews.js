@@ -1,6 +1,10 @@
 const db = require('../connection')
 
-exports.fetchReview = ((id) => {    
+exports.fetchReviews = (() => {
+    return db.query('SELECT reviews.review_id, title, designer, owner, review_img_url, review_body, category, reviews.created_at, reviews.votes, count(comment_id) AS comment_count FROM reviews FULL JOIN comments ON reviews.review_id = comments.review_id GROUP BY reviews.review_id;')
+})
+
+exports.fetchReviewID = ((id) => {    
     return db.query('SELECT reviews.review_id, title, designer, owner, review_img_url, review_body, category, reviews.created_at, reviews.votes, count(comment_id) AS comment_count FROM reviews FULL JOIN comments ON reviews.review_id = comments.review_id  WHERE reviews.review_id = $1 GROUP BY reviews.review_id;', [id])
     .then((review) => {
         if(review.rows.length === 0) {
