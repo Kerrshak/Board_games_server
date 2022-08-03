@@ -37,7 +37,7 @@ app.all('/*', (req, res) => {
 app.use((err, req, res, next) => {
     console.log('hello from errors, ', err)
     if(err.code === '22P02') {
-        res.status(400).send({msg: 'The review ID should take the form of an integer, please try again'})
+        res.status(400).send({msg: 'Bad request'})
     } else next(err, req, res,next)
 })
 

@@ -126,7 +126,7 @@ describe('.GET /api/reviews/:review_id', () => {
         .get('/api/reviews/halo3')
         .expect(400)
         .then(({body}) => {
-            expect(body).toEqual({msg: 'The review ID should take the form of an integer, please try again'})
+            expect(body).toEqual({msg: 'Bad request'})
         })
     })
 })
@@ -165,7 +165,7 @@ describe('.GET /api/reviews/:review_id/comments', () => {
             ]})
         })
     })
-    test('should respond with status 200 and a message if there are no comments on the review', () => {
+    test('should respond with status 204 and a message if there are no comments on the review', () => {
         return request(app)
         .get('/api/reviews/11/comments')
         .expect(200)
@@ -178,7 +178,7 @@ describe('.GET /api/reviews/:review_id/comments', () => {
         .get('/api/reviews/9001/comments')
         .expect(404)
         .then(({body}) => {
-            expect(body).toEqual({msg: 'This review does not exist'})
+            expect(body).toEqual({msg: 'Not found'})
         })
     })
     test('should respond with status 400 and an error message if the the review_id has been entered in an unexpected format', () => {
@@ -186,7 +186,7 @@ describe('.GET /api/reviews/:review_id/comments', () => {
         .get('/api/reviews/halo3/comments')
         .expect(400)
         .then(({body}) => {
-            expect(body).toEqual({msg: 'The review ID should take the form of an integer, please try again'})
+            expect(body).toEqual({msg: 'Bad request'})
         })
     })
 })
@@ -258,7 +258,7 @@ describe('PATCH /api/reviews/:review_id', () => {
         .send({inc_votes: 5})
         .expect(400)
         .then(({body}) => {
-            expect(body).toEqual({msg: 'The review ID should take the form of an integer, please try again'})
+            expect(body).toEqual({msg: 'Bad request'})
         })
     })
 })
