@@ -1,7 +1,8 @@
 const db = require('../connection')
 
-exports.fetchReviews = (() => {
-    return db.query('SELECT reviews.review_id, title, designer, owner, review_img_url, review_body, category, reviews.created_at, reviews.votes, count(comment_id) AS comment_count FROM reviews FULL JOIN comments ON reviews.review_id = comments.review_id GROUP BY reviews.review_id ORDER BY reviews.created_at DESC;')
+exports.fetchReviews = ((sortBy = 'reviews.created_at', order = 'DESC', category = '') => {
+
+    return db.query(`SELECT reviews.review_id, title, designer, owner, review_img_url, review_body, category, reviews.created_at, reviews.votes, count(comment_id) AS comment_count FROM reviews FULL JOIN comments ON reviews.review_id = comments.review_id ${category} GROUP BY reviews.review_id ORDER BY ${sortBy} ${order};`)
 })
 
 exports.fetchReviewID = ((id) => {    
