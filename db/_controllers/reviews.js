@@ -1,10 +1,15 @@
 const {fetchReviews, fetchReviewID, updateReview} = require('../_models/reviews')
 
-exports.getReviews = ((res) => {
-    return fetchReviews()
+exports.getReviews = ((req, res, next) => {
+    const sortBy = req.query.sort_by
+    const order = req.query.order
+    const category = req.query.category
+
+    return fetchReviews(sortBy, order, category)
     .then((reviews) => {
         res.status(200).send({reviews: reviews.rows})
     })
+    .catch(next)
 })
 
 exports.getReviewID = ((req, res, next) => {

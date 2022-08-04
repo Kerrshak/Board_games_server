@@ -11,8 +11,8 @@ app.get('/api/categories', (req, res) => {
     getCategories(req, res)
 })
 
-app.get('/api/reviews', (req, res) => {
-    getReviews(res)
+app.get('/api/reviews', (req, res, next) => {
+    getReviews(req, res, next)
 })
 
 app.get('/api/reviews/:review_id', (req, res, next) => {

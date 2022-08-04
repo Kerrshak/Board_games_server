@@ -75,18 +75,164 @@ describe('.GET /api/reviews', () => {
             })
         })
     })
-    test('array should be sorted by date in descending order', () => {
+    test('array should by default be sorted by date in descending order', () => {
         return request(app)
         .get('/api/reviews')
         .then(({body}) => {
-            const regex = /[^0-9]/g
-
             for(let i = 1; i < body.reviews.length; i++) {
                 const date1 = parseInt(body.reviews[i - 1].created_at.replace(/[^0-9]/g, ''))
                 const date2 = parseInt(body.reviews[i].created_at.replace(/[^0-9]/g, ''))
                 
                 expect(date1).toBeGreaterThanOrEqual(date2)
             }
+        })
+    })
+    test('endpoint should accept queries to sort by column (descending order by default)', () => {
+        return request(app)
+        .get('/api/reviews?sort_by=votes')
+        .then(({body}) => {
+            for(let i = 1; i < body.reviews.length; i++) {
+                const votes1 = body.reviews[i - 1].votes
+                const votes2 = body.reviews[i].votes
+                
+                expect(votes1).toBeGreaterThanOrEqual(votes2)
+            }
+        })
+    })
+    test('endpoint should accept queries to order either ascending or descending', () => {
+        return request(app)
+        .get('/api/reviews?order=asc')
+        .then(({body}) => {
+            for(let i = 1; i < body.reviews.length; i++) {
+                const date1 = parseInt(body.reviews[i - 1].created_at.replace(/[^0-9]/g, ''))
+                const date2 = parseInt(body.reviews[i].created_at.replace(/[^0-9]/g, ''))
+                
+                expect(date1).toBeLessThanOrEqual(date2)
+            }
+        })
+    })
+    test('endpoint should accept queries to filter by category', () => {
+        return request(app)
+        .get('/api/reviews?category=dexterity')
+        .then(({body}) => {
+            expect(body.reviews).toEqual([
+                {
+                    title: "Kerplunk; Don't lose your marbles",
+                    designer: 'Avery Wunzboogerz',
+                    owner: 'tickle122',
+                    review_img_url:
+                      'https://images.pexels.com/photos/278888/pexels-photo-278888.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260',
+                    review_body:
+                      "Don't underestimate the tension and supsense that can be brought on with a round of Kerplunk! You'll feel the rush and thrill of not disturbing the stack of marbles, and probably utter curse words when you draw the wrong straw. Fanily friendly, and not just for kids! ",
+                    category: 'dexterity',
+                    comment_count: "3",
+                    review_id: 13,
+                    created_at: "2021-01-25T11:16:54.963Z",
+                    votes: 9
+                },
+                {
+                    title: 'Super Rhino Hero',
+                    designer: 'Gamey McGameface',
+                    owner: 'jessjelly',
+                    review_img_url:
+                    'https://images.pexels.com/photos/278918/pexels-photo-278918.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260',
+                    review_body:
+                    'Consequat velit occaecat voluptate do. Dolor pariatur fugiat sint et proident ex do consequat est. Nisi minim laboris mollit cupidatat et adipisicing laborum do. Sint sit tempor officia pariatur duis ullamco labore ipsum nisi voluptate nulla eu veniam. Et do ad id dolore id cillum non non culpa. Cillum mollit dolor dolore excepteur aliquip. Cillum aliquip quis aute enim anim ex laborum officia. Aliqua magna elit reprehenderit Lorem elit non laboris irure qui aliquip ad proident. Qui enim mollit Lorem labore eiusmod',
+                    category: 'dexterity',
+                    comment_count: "2",
+                    review_id: 10,
+                    created_at: "2021-01-22T11:35:50.936Z",
+                    votes: 7
+                },
+                {
+                    title: 'JengARRGGGH!',
+                    designer: 'Leslie Scott',
+                    owner: 'grumpy19',
+                    review_img_url:
+                      'https://images.pexels.com/photos/4009761/pexels-photo-4009761.jpeg?auto=compress&cs=tinysrgb&dpr=3&h=750&w=1260',
+                    review_body:
+                      "Few games are equiped to fill a player with such a defined sense of mild-peril, but a friendly game of Jenga will turn the mustn't-make-it-fall anxiety all the way up to 11! Fiddly fun for all the family, this game needs little explaination. Whether you're a player who chooses to play it safe, or one who lives life on the edge, eventually the removal of blocks will destabilise the tower and all your Jenga dreams come tumbling down.",
+                    category: 'dexterity',
+                    comment_count: "3",
+                    review_id: 2,
+                    created_at: "2021-01-18T10:01:41.251Z",
+                    votes: 5
+                }
+            ])
+        })
+    })
+    test('endpoint should accept all types of query together', () => {
+        return request(app)
+        .get('/api/reviews?category=dexterity&sort_by=owner&order=asc')
+        .then(({body}) => {
+            expect(body.reviews).toEqual([
+                {
+                    title: 'JengARRGGGH!',
+                    designer: 'Leslie Scott',
+                    owner: 'grumpy19',
+                    review_img_url:
+                    'https://images.pexels.com/photos/4009761/pexels-photo-4009761.jpeg?auto=compress&cs=tinysrgb&dpr=3&h=750&w=1260',
+                    review_body:
+                    "Few games are equiped to fill a player with such a defined sense of mild-peril, but a friendly game of Jenga will turn the mustn't-make-it-fall anxiety all the way up to 11! Fiddly fun for all the family, this game needs little explaination. Whether you're a player who chooses to play it safe, or one who lives life on the edge, eventually the removal of blocks will destabilise the tower and all your Jenga dreams come tumbling down.",
+                    category: 'dexterity',
+                    comment_count: "3",
+                    review_id: 2,
+                    created_at: "2021-01-18T10:01:41.251Z",
+                    votes: 5
+                },
+                {
+                    title: 'Super Rhino Hero',
+                    designer: 'Gamey McGameface',
+                    owner: 'jessjelly',
+                    review_img_url:
+                    'https://images.pexels.com/photos/278918/pexels-photo-278918.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260',
+                    review_body:
+                    'Consequat velit occaecat voluptate do. Dolor pariatur fugiat sint et proident ex do consequat est. Nisi minim laboris mollit cupidatat et adipisicing laborum do. Sint sit tempor officia pariatur duis ullamco labore ipsum nisi voluptate nulla eu veniam. Et do ad id dolore id cillum non non culpa. Cillum mollit dolor dolore excepteur aliquip. Cillum aliquip quis aute enim anim ex laborum officia. Aliqua magna elit reprehenderit Lorem elit non laboris irure qui aliquip ad proident. Qui enim mollit Lorem labore eiusmod',
+                    category: 'dexterity',
+                    comment_count: "2",
+                    review_id: 10,
+                    created_at: "2021-01-22T11:35:50.936Z",
+                    votes: 7
+                },
+                {
+                    title: "Kerplunk; Don't lose your marbles",
+                    designer: 'Avery Wunzboogerz',
+                    owner: 'tickle122',
+                    review_img_url:
+                      'https://images.pexels.com/photos/278888/pexels-photo-278888.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260',
+                    review_body:
+                      "Don't underestimate the tension and supsense that can be brought on with a round of Kerplunk! You'll feel the rush and thrill of not disturbing the stack of marbles, and probably utter curse words when you draw the wrong straw. Fanily friendly, and not just for kids! ",
+                    category: 'dexterity',
+                    comment_count: "3",
+                    review_id: 13,
+                    created_at: "2021-01-25T11:16:54.963Z",
+                    votes: 9
+                }
+            ])
+        })
+    })
+    test(`should return status 400 and "Bad request" whenever sort_by doesn't match the columns on the table`, () => {
+        return request(app)
+        .get('/api/reviews?sort_by=I_AM_HACKERMAN')
+        .expect(400)
+        .then(({body}) => {
+            expect(body).toEqual({msg: 'Bad request'})
+        })
+    })
+    test(`should return status 400 and "Bad request" whenever order is not "asc" or "desc"`, () => {
+        return request(app)
+        .get('/api/reviews?order=THIS_IS_SQL_INJECTION')
+        .expect(400)
+        .then(({body}) => {
+            expect(body).toEqual({msg: 'Bad request'})
+        })
+    })
+    test(`should return status 404 and "Not found" whenever category doesn't match the categories which exist`, () => {
+        return request(app)
+        .get('/api/reviews?category=MUAHAHAHA')
+        .expect(404)
+        .then(({body}) => {
+            expect(body).toEqual({msg: 'Not Found'})
         })
     })
 })
@@ -235,10 +381,19 @@ describe('.POST /api/reviews/:review_id/comments', () => {
             expect(body).toEqual({msg: 'Unauthorized'})
         })
     })
-    test('should respond with with status 400 and an error message if the comment property is empty', () => {
+    test('should respond with status 400 and an error message if the comment property is empty', () => {
         return request(app)
         .post('/api/reviews/1/comments')
         .send({username: 'weegembump', body: ''})
+        .expect(400)
+        .then(({body}) => {
+            expect(body).toEqual({msg: 'Bad request'})
+        })
+    })
+    test('should respond with status 400 and an error message if the object is not in the expected form', () => {
+        return request(app)
+        .post('/api/reviews/1/comments')
+        .send({username: 'weegembump'})
         .expect(400)
         .then(({body}) => {
             expect(body).toEqual({msg: 'Bad request'})
