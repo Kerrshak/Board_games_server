@@ -16,6 +16,10 @@ exports.postComment = ((req, res, next) => {
     const comment = req.body.body
     const date = new Date(Date.now())
 
+    if(typeof comment === 'undefined') {
+        return next({status: 400, msg: 'Bad request'})
+    }
+
     if(comment.length === 0) {
         return next({status: 400, msg: 'Bad request'})
     }

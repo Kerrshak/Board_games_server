@@ -227,12 +227,12 @@ describe('.GET /api/reviews', () => {
             expect(body).toEqual({msg: 'Bad request'})
         })
     })
-    test(`should return status 400 and "Bad request" whenever category doesn't match the categories which exist`, () => {
+    test(`should return status 404 and "Not found" whenever category doesn't match the categories which exist`, () => {
         return request(app)
         .get('/api/reviews?category=MUAHAHAHA')
-        .expect(400)
+        .expect(404)
         .then(({body}) => {
-            expect(body).toEqual({msg: 'Bad request'})
+            expect(body).toEqual({msg: 'Not Found'})
         })
     })
 })
@@ -381,10 +381,19 @@ describe('.POST /api/reviews/:review_id/comments', () => {
             expect(body).toEqual({msg: 'Unauthorized'})
         })
     })
-    test('should respond with with status 400 and an error message if the comment property is empty', () => {
+    test('should respond with status 400 and an error message if the comment property is empty', () => {
         return request(app)
         .post('/api/reviews/1/comments')
         .send({username: 'weegembump', body: ''})
+        .expect(400)
+        .then(({body}) => {
+            expect(body).toEqual({msg: 'Bad request'})
+        })
+    })
+    test('should respond with status 400 and an error message if the object is not in the expected form', () => {
+        return request(app)
+        .post('/api/reviews/1/comments')
+        .send({username: 'weegembump'})
         .expect(400)
         .then(({body}) => {
             expect(body).toEqual({msg: 'Bad request'})
