@@ -191,6 +191,61 @@ describe('.GET /api/reviews/:review_id/comments', () => {
     })
 })
 
+describe('.POST /api/reviews/:review_id/comments', () => {
+    test('when passed an object in the format of {username: a username from users table, body: string} returns status 201 and the comment', () => {
+        return request(app)
+        .post('/api/reviews/1/comments')
+        .send({username: 'weegembump', body: '11/10 game, did not expect the Spanish Inquisition'})
+        .expect(201)
+        .then(({body}) => {
+            expect(body.comment).toEqual({
+                comment_id: 62,
+                body: '11/10 game, did not expect the Spanish Inquisition',
+                votes: 0,
+                author: 'weegembump',
+                review_id: 1,
+                created_at: expect.any(String) //necessary as there is a 7 millisecond delay between the controller and the test but this will vary depending on PC and background processes
+            })
+        })
+    })
+    test('should respond with status 404 and an error message if the review does not exist', () => {
+        return request(app)
+        .post('/api/reviews/9001/comments')
+        .send({username: 'weegembump', body: '11/10 game, did not expect the Spanish Inquisition'})
+        .expect(404)
+        .then(({body}) => {
+            expect(body).toEqual({msg: 'Not found'})
+        })
+    })
+    test('should respond with status 400 and an error message if the the review_id has been entered in an unexpected format', () => {
+        return request(app)
+        .post('/api/reviews/halo3/comments')
+        .send({username: 'weegembump', body: '11/10 game, did not expect the Spanish Inquisition'})
+        .expect(400)
+        .then(({body}) => {
+            expect(body).toEqual({msg: 'Bad request'})
+        })
+    })
+    test('should respond with with status 401 and an error message if the user does not exist on the users table', () => {
+        return request(app)
+        .post('/api/reviews/1/comments')
+        .send({username: 'THE SPANISH INQUISITION', body: '11/10 game, did not expect the Spanish Inquisition'})
+        .expect(401)
+        .then(({body}) => {
+            expect(body).toEqual({msg: 'Unauthorized'})
+        })
+    })
+    test('should respond with with status 400 and an error message if the comment property is empty', () => {
+        return request(app)
+        .post('/api/reviews/1/comments')
+        .send({username: 'weegembump', body: ''})
+        .expect(400)
+        .then(({body}) => {
+            expect(body).toEqual({msg: 'Bad request'})
+        })
+    })
+})
+
 describe('PATCH /api/reviews/:review_id', () => {
     test('should take an object in the form {inc_votes: 0} and respond with the review and status 200', () => {
         return request(app)
