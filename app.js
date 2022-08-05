@@ -3,6 +3,7 @@ const {getCategories} = require('./db/_controllers/categories')
 const {getComments, postComment, deleteComment} = require('./db/_controllers/comments')
 const {getReviews, getReviewID, patchReview} = require('./db/_controllers/reviews')
 const {getUsers} = require('./db/_controllers/users')
+const {getAPI} = require('./api')
 const app = express()
 
 app.use(express.json())
@@ -36,6 +37,10 @@ app.get('/api/users', (req, res) => {
 
 app.delete('/api/comments/:comment_id', (req, res, next) => {
     deleteComment(req, res, next)
+})
+
+app.get('/api', (req, res) => {
+    getAPI(res)
 })
 
 app.all('/*', (req, res) => {

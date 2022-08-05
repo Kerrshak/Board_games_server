@@ -548,3 +548,20 @@ describe('DELETE /api/comments/:comment_id', () => {
         })
     })
 })
+
+describe.only('GET /api', () => {
+    test("returns a JSON object describing how each of the endpoints is used and what the responses look like", () => {
+        return request(app)
+        .get('/api')
+        .expect(200)
+        .then(({text}) => {
+            expect(typeof text).toBe('string')
+
+            const apiObj = JSON.parse(text)
+            
+            expect(apiObj['GET /api']).toEqual({
+                description: 'serves up a json representation of all the available endpoints of the api'
+            })
+        })
+    })
+})
