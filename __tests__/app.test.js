@@ -497,3 +497,54 @@ describe('GET /api/users', () => {
         })
     })
 })
+
+describe('DELETE /api/comments/:comment_id', () => {
+    test('endpoint should delete the comment with the specified ID and return status 204 and no content', () => {
+        return request(app)
+        .delete('/api/comments/1')
+        .expect(204)
+        .then(({body}) => {
+            expect(body).toEqual({})
+            return request(app)
+            .get('/api/reviews/2/comments')
+        })
+        .then(({body}) => {
+            expect(body).toEqual({
+                comments: [
+                  {
+                    comment_id: 4,
+                    body: 'EPIC board game!',
+                    review_id: 2,
+                    author: 'tickle122',
+                    votes: 16,
+                    created_at: '2017-11-22T12:36:03.389Z'
+                  },
+                  {
+                    comment_id: 10,
+                    body: 'Ex id ipsum dolore non cillum anim sint duis nisi anim deserunt nisi minim.',
+                    review_id: 2,
+                    author: 'grumpy19',
+                    votes: 9,
+                    created_at: '2021-03-27T14:15:31.110Z'
+                  }
+                ]
+              })
+        })
+    })
+    test('should respond with 404 and a message if there is no comment with that ID', () => {
+        return request(app)
+        .delete('/api/comments/9001')
+        .expect(404)
+        .then(({body}) => {
+            expect(body).toEqual({msg: 'Not found'})
+        })
+    })
+    test('should respond with 400 and a message if the comment ID is not an integer', () => {
+        return request(app)
+        .delete('/api/comments/time_for_tea')
+        .expect(400)
+        .then(({body}) => {
+            expect(body).toEqual({msg: 'Bad request'})
+        })
+    })
+})

@@ -29,3 +29,6 @@ exports.addComment = ((id, username, comment, date) => {
     })
 })
 
+exports.removeComment = ((id) => {
+        return db.query('DELETE FROM comments WHERE comment_id = $1', [id])
+})
