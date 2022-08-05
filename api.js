@@ -5,6 +5,6 @@ exports.getAPI = (res) => {
         if(err){
             return Promise.reject(err)
         }
-        res.status(200).send(data)
+        res.status(200).send({api: JSON.parse(data)})
     })
 }
