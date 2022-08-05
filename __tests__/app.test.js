@@ -556,6 +556,12 @@ describe.only('GET /api', () => {
         .expect(200)
         .then(({text}) => {
             expect(typeof text).toBe('string')
+
+            const apiObj = JSON.parse(text)
+            
+            expect(apiObj['GET /api']).toEqual({
+                description: 'serves up a json representation of all the available endpoints of the api'
+            })
         })
     })
 })
