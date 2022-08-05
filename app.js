@@ -1,6 +1,6 @@
 const express = require('express')
 const {getCategories} = require('./db/_controllers/categories')
-const {getComments, postComment} = require('./db/_controllers/comments')
+const {getComments, postComment, deleteComment} = require('./db/_controllers/comments')
 const {getReviews, getReviewID, patchReview} = require('./db/_controllers/reviews')
 const {getUsers} = require('./db/_controllers/users')
 const app = express()
@@ -32,6 +32,10 @@ app.post('/api/reviews/:review_id/comments', (req, res, next) => {
 
 app.get('/api/users', (req, res) => {
     getUsers(res)
+})
+
+app.delete('/api/comments/:comment_id', (req, res, next) => {
+    deleteComment(req, res, next)
 })
 
 app.all('/*', (req, res) => {

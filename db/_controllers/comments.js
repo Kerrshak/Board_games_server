@@ -1,4 +1,4 @@
-const {fetchComments, addComment} = require('../_models/comments')
+const {fetchComments, addComment, removeComment} = require('../_models/comments')
 
 exports.getComments = ((req, res, next) => {
     const id = req.params.review_id
@@ -27,6 +27,19 @@ exports.postComment = ((req, res, next) => {
     return addComment(id, username, comment, date)
     .then((comment) => {
         res.status(201).send({comment: comment.rows[0]})
+    })
+    .catch(next)
+})
+
+exports.deleteComment = ((req, res, next) => {
+    const id= req.params.comment_id
+
+    return removeComment(id)
+    .then(({rowCount}) => {
+        if(rowCount === 0){
+            return next({status: 404, msg: 'Not found'})
+        }
+        res.status(204).send({})
     })
     .catch(next)
 })
