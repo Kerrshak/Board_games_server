@@ -112,7 +112,7 @@
       ]
     }
   },
-  "/api/comments/:comment_id": {
+  "DELETE /api/comments/:comment_id": {
     "description": "deletes specified comment from database then serves nothing",
     "queries": [],
     "exampleResponse": {}
