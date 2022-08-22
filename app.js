@@ -5,6 +5,9 @@ const {getReviews, getReviewID, patchReview} = require('./db/_controllers/review
 const {getUsers} = require('./db/_controllers/users')
 const {getAPI} = require('./api')
 const app = express()
+const cors = require('cors');
+
+app.use(cors());
 
 app.use(express.json())
 
@@ -48,7 +51,6 @@ app.all('/*', (req, res) => {
 })
 
 app.use((err, req, res, next) => {
-    console.log('hello from errors, ', err)
     if(err.code === '22P02') {
         res.status(400).send({msg: 'Bad request'})
     } else next(err, req, res,next)
